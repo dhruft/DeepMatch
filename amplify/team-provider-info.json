@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-expotesting-dev-212826-authRole",
+      "UnauthRoleArn": "arn:aws:iam::489159813353:role/amplify-expotesting-dev-212826-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::489159813353:role/amplify-expotesting-dev-212826-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-expotesting-dev-212826-deployment",
+      "UnauthRoleName": "amplify-expotesting-dev-212826-unauthRole",
+      "StackName": "amplify-expotesting-dev-212826",
+      "StackId": "arn:aws:cloudformation:us-east-1:489159813353:stack/amplify-expotesting-dev-212826/40848600-4c8d-11ed-a5ba-12c8a5dfee67",
+      "AmplifyAppId": "d277r15wdbxh7p"
+    },
+    "categories": {
+      "function": {
+        "expoLAMBDA": {
+          "deploymentBucketName": "amplify-expotesting-dev-212826-deployment",
+          "s3Key": "amplify-builds/expoLAMBDA-634a6531576b35464950-build.zip"
+        }
+      },
+      "api": {
+        "expoAPI": {}
+      }
+    }
+  }
+}
