@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import {StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, Platform } from 'react-native'
 import { Camera,CameraType, FlashMode } from 'expo-camera'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 import flip from './src/flip.png'
 import flashIcon from './src/flash.png'
@@ -8,35 +8,23 @@ import noFlashIcon from './src/noFlash.png'
 import submitIcon from './src/submit.png'
 import retakeIcon from './src/retake.png'
 
-import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
-import {useEffect} from 'react'
+//const camHeight = Dimensions.get('window').height;
+// const camWidth = 100 * (1952/4224 * camHeight) / (Dimensions.get('window').width)
+const camWidth = 100 * (Dimensions.get('window').height * 0.5) / Dimensions.get('window').width;
 
-export default function CamComp({ closeCamera }) {
+export default function CamComp({ closeCamera, submitImage }) {
+
     const [type, setType] = useState(CameraType.back);
     const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
     const [snapshot, setSnap] = useState(null)
     let camera = Camera
 
-    const [availableCameras, setAvailableCameras] = useState([])
-
     const __takePicture = async () => {
         if (!camera) return
-        var photo = await camera.takePictureAsync().catch((error)=>console.log(error))
+        console.log(type, CameraType.front, type===CameraType.front)
+        var photo = await camera.takePictureAsync({isImageMirror: Platform.OS ==='web'}).catch((error)=>console.log(error))
 
-        console.log(CameraType.front, type)
-
-        console.log(availableCameras)
-
-        // if (type === CameraType.front || availableCameras.length < 2) {
-        //   photo = manipulateAsync(
-        //       photo.localUri || photo.uri,
-        //       [
-        //           { rotate: 180 },
-        //           { flip: FlipType.Vertical },
-        //       ],
-        //       { compress: 1, format: SaveFormat.PNG }
-        //   )
-        // }
+        console.log(photo)
 
         setSnap(photo)
   
@@ -54,22 +42,17 @@ export default function CamComp({ closeCamera }) {
       setSnap(null)
     }
 
-    // useEffect(() => {
-    //   Camera.getAvailableCameraTypesAsync().then((cameras)=>{
-    //     console.log(cameras)
-    //     setAvailableCameras(cameras)
-    //   })
-    // }, [])
-
     return (
-        <View style={{width:"100%",height:"100%",}}>
+        <View style={{width:`${camWidth}%`, height:'100%'}}>
         {snapshot === null ? 
           <View style={{width:"100%",height:"100%",}}>
           
             <Camera
               style={{
                 flex: 1,
-                width:"100%",}}
+                width:"100%",
+                flex: 1,
+                aspectRatio: 0.5}}
               ref={(r) => {
                 camera = r
               }}
@@ -100,7 +83,7 @@ export default function CamComp({ closeCamera }) {
                 <Image
                   style={styles.tinyButton}
                   source={flip}
-                  disabled={availableCameras.length < 2}
+                  disabled={Platform.OS == 'web'}
                 />
               </TouchableOpacity>
 
@@ -109,9 +92,9 @@ export default function CamComp({ closeCamera }) {
 
         </View>
         : 
-        <View style={{width:"100%",height:"100%",}}>
+        <View style={{width:`100%`,height:"100%"}}>
           <Image
-            style={{width:'100%', height:'100%'}}
+            style={{width:'100%', height:'100%', transform: [{ scaleX: (Platform.OS === 'ios' && type===CameraType.front) ? -1 : 1 }]}}
             source={snapshot}
           />
 
@@ -120,7 +103,7 @@ export default function CamComp({ closeCamera }) {
             <View style={styles.submission}>
 
               <TouchableOpacity
-              onPress={() => {closeCamera(snapshot)}}
+              onPress={() => {submitImage(snapshot, Platform.OS === 'ios' && CameraType.front===type)}}
               >
                 <Image
                   style={styles.largeButton}
@@ -130,6 +113,14 @@ export default function CamComp({ closeCamera }) {
 
               <TouchableOpacity
               onPress={retake}>
+                <Image
+                  style={styles.largeButton}
+                  source={retakeIcon}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+              onPress={closeCamera}>
                 <Image
                   style={styles.largeButton}
                   source={retakeIcon}
@@ -157,7 +148,7 @@ const styles = StyleSheet.create({
   
       position: 'absolute',
       bottom: 0,
-      height: 215,
+      height: '23%',
       width: '100%',
       backgroundColor: '#000',
   
