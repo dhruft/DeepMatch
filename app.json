@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-testing",
-    "slug": "expo-testing",
+    "name": "DeepMatch",
+    "slug": "DeepMatch",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
